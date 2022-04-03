@@ -1,0 +1,29 @@
+compatibility_date = "2022-01-25"
+name = "worker"
+type = "javascript"
+workers_dev = true
+
+[site]
+bucket = "./public"
+entry-point = ""
+
+[build]
+command = "yarn && yarn build"
+
+[build.upload]
+dir = "dist"
+format = "modules"
+main = "./index.mjs"
+
+[durable_objects]
+bindings = [{ name = "STORAGE", class_name = "Storage" }]
+
+[[migrations]]
+tag = "v1"                # Should be unique for each entry
+new_classes = ["Storage"]
+
+# [secrets]
+# JWT_SECRET
+# CF_TOKEN
+# CF_ACCOUNT_ID
+# AUTH_HEADER_KEY

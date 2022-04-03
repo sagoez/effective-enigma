@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "ESNext",
+    "target": "esnext",
+    "lib": ["esnext"],
+    "alwaysStrict": true,
+    "strict": true,
+    "preserveConstEnums": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "allowJs": false,
+    "checkJs": false,
+    "forceConsistentCasingInFileNames": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "stripInternal": true,
+    "noEmit": false,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
+    "noUnusedParameters": true,
+    "plugins": [{ "transform": "@effect-ts/tracing-plugin" }],
+    "esModuleInterop": true,
+    "types": [
+      "@cloudflare/workers-types",
+      "@types/jest",
+      "@types/service-worker-mock"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["src/libs/*"],
+      "@utils/*": ["src/utils/*"],
+      "@constants/*": ["src/constants/*"],
+      "@storage/*": ["src/apps/storage/*"],
+      "@storage": ["src/apps/storage"],
+      "@streaming/*": ["src/apps/streaming/*"],
+      "@streaming": ["src/apps/streaming"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test"]
+}
