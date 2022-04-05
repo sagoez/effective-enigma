@@ -11,11 +11,9 @@ import {
 } from "@streaming/services/Streaming"
 import * as R from "@core/router"
 import { createErrorResponse, discriminator } from "@utils/request"
-import { API_V1 } from "@constants/versions"
 
 export const createStreamFromName = R.route({
   path: "create.stream",
-  version: API_V1,
   method: "POST",
 })(
   T.gen(function* (_) {
@@ -52,7 +50,6 @@ export const createStreamFromName = R.route({
 
 export const deleteStreamFromName = R.route({
   path: "delete.stream",
-  version: API_V1,
   method: "DELETE",
 })(
   T.gen(function* (_) {

@@ -7,33 +7,44 @@ import { Logger } from "@streaming/services/Logger"
 import JWT from "@tsndr/cloudflare-worker-jwt"
 import { createErrorResponse } from "@utils/request"
 
-//TODO: Abstract common logic in authMiddleware and adminMiddleware to a  common function
+const authenticate = T.gen(function* (_) {
+  const request = yield* _(currentRequest)
+  const maybeToken = request.headers.get("authorization")
+
+  if (!maybeToken) {
+    return createErrorResponse(string)({
+      status: 401,
+      value: "You are not authorized",
+    })
+  }
+
+  const token = maybeToken.split("Bearer")[1]
+
+  if (!token) {
+    return createErrorResponse(string)({
+      status: 400,
+      value: "Error decoding token",
+    })
+  }
+
+  const decoded = yield* _(T.succeed(JWT.decode(token.trim())))
+
+  return {
+    maybeDecodedToken: token,
+    decoded,
+  }
+})
 
 export const authMiddleware = <R>(child: Router<R>) =>
   middleware(child, (handler) =>
     T.gen(function* (_) {
-      const request = yield* _(currentRequest)
       const { JWT_SECRET } = yield* _(currentEnv)
+      const authenticated = yield* _(authenticate)
 
-      const maybeToken = request.headers.get("authorization")
-
-      if (!maybeToken) {
-        return createErrorResponse(string)({
-          status: 401,
-          value: "You are not authorized",
-        })
+      if (authenticated instanceof Response) {
+        return authenticated
       }
-
-      const maybeDecodedToken = maybeToken.split("Bearer")[1]
-
-      if (!maybeDecodedToken) {
-        return createErrorResponse(string)({
-          status: 400,
-          value: "Error decoding token",
-        })
-      }
-
-      const decoded = yield* _(T.succeed(JWT.decode(maybeDecodedToken.trim())))
+      const { maybeDecodedToken, decoded } = authenticated
 
       if (!decoded) {
         return createErrorResponse(string)({
@@ -61,28 +72,13 @@ export const authMiddleware = <R>(child: Router<R>) =>
 export const adminMiddleware = <R>(child: Router<R>) =>
   middleware(child, (handler) =>
     T.gen(function* (_) {
-      const request = yield* _(currentRequest)
+      const authenticated = yield* _(authenticate)
       const { JWT_SECRET } = yield* _(currentEnv)
 
-      const maybeToken = request.headers.get("authorization")
-
-      if (!maybeToken) {
-        return createErrorResponse(string)({
-          status: 401,
-          value: "You are not authorized",
-        })
+      if (authenticated instanceof Response) {
+        return authenticated
       }
-
-      const maybeDecodedToken = maybeToken.split("Bearer")[1]
-
-      if (!maybeDecodedToken) {
-        return createErrorResponse(string)({
-          status: 400,
-          value: "Error decoding token",
-        })
-      }
-
-      const decoded = yield* _(T.succeed(JWT.decode(maybeDecodedToken.trim())))
+      const { maybeDecodedToken, decoded } = authenticated
 
       if (!decoded || !(decoded as { [k: string]: unknown }).isAdmin) {
         return createErrorResponse(string)({

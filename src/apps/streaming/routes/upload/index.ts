@@ -1,4 +1,3 @@
-import { API_V1 } from "@constants/versions"
 import { currentRequest } from "@core/cloudfare/ApiRequest"
 import { DecodeError, string } from "@core/codec"
 import * as R from "@core/router"
@@ -14,7 +13,6 @@ import { createErrorResponse, discriminator } from "@utils/request"
 
 export const uploadFromUrl = R.route({
   path: "upload.copy",
-  version: API_V1,
   method: "POST",
 })(
   T.gen(function* (_) {
@@ -48,7 +46,6 @@ export const uploadFromUrl = R.route({
 
 export const uploadFromFile = R.route({
   path: "upload.file",
-  version: API_V1,
   method: "POST",
 })(
   T.gen(function* (_) {

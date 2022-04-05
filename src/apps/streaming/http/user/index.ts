@@ -1,4 +1,4 @@
-import { API_V1 } from "@constants/versions"
+import { API_V1 } from "@streaming/http/version"
 import { currentRequest } from "@core/cloudfare/ApiRequest"
 import { UniqueStorageContext } from "@core/cloudfare/StorageContext"
 import { string } from "@core/codec"

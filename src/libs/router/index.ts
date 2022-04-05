@@ -15,13 +15,16 @@ export type RouterMethods =
   | "PATCH"
   | "HEAD"
   | "OPTIONS"
+
+export type Path = string | RegExp
+
 export namespace Router {
   export class Merge<R> extends Tagged("Merge")<{
     readonly routes: readonly Router<R>[]
   }> {}
 
   export class Route<R> extends Tagged("Route")<{
-    readonly path: string | RegExp
+    readonly path: Path
     readonly handler: Effect<R, never, Response>
     readonly method: RouterMethods
   }> {}
@@ -60,17 +63,10 @@ export type MergeEnv<RoutesArray extends Array<Router<any>>> =
 export const empty: Router<unknown> = Router.Empty.make()
 
 export const route =
-  ({
-    path,
-    version,
-    method,
-  }: {
-    path: string | RegExp
-    version: string
-    method: RouterMethods
-  }) =>
+  ({ path, method }: { path: Path; method: RouterMethods }) =>
   <R>(handler: Effect<R, never, Response>): Router<R> =>
-    new Router.Route({ path: `/${version}/${path}`, handler, method })
+    /// change harcoded string version to a string literal
+    new Router.Route({ path: `/v1/${path}`, handler, method })
 
 export const merge = <RoutesArray extends Array<Router<any>>>(
   ...routes: RoutesArray

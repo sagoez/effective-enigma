@@ -1,4 +1,3 @@
-import { API_V1 } from "@constants/versions"
 import { currentRequest } from "@core/cloudfare/ApiRequest"
 import { currentState } from "@core/cloudfare/StorageContext"
 import { currentEnv } from "@core/cloudfare/WorkerContext"
@@ -27,7 +26,6 @@ import {
 export const getUserRoute = R.route({
   method: "GET",
   path: "get.user",
-  version: API_V1,
 })(
   pipe(
     T.do,
@@ -78,7 +76,6 @@ export const getUserRoute = R.route({
 export const loginUserRoute = R.route({
   method: "POST",
   path: "login.user",
-  version: API_V1,
 })(
   T.gen(function* (_) {
     const request = yield* _(currentRequest)
@@ -163,7 +160,6 @@ export const loginUserRoute = R.route({
 
 export const createUserRoute = R.route({
   path: "create.user",
-  version: API_V1,
   method: "POST",
 })(
   T.gen(function* (_) {

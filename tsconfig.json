@@ -2,8 +2,8 @@
   "compilerOptions": {
     "outDir": "./dist",
     "module": "ESNext",
-    "target": "esnext",
-    "lib": ["esnext"],
+    "target": "ESNext",
+    "lib": ["ESNext"],
     "alwaysStrict": true,
     "strict": true,
     "preserveConstEnums": true,
@@ -34,7 +34,6 @@
     "paths": {
       "@core/*": ["src/libs/*"],
       "@utils/*": ["src/utils/*"],
-      "@constants/*": ["src/constants/*"],
       "@storage/*": ["src/apps/storage/*"],
       "@storage": ["src/apps/storage"],
       "@streaming/*": ["src/apps/streaming/*"],
