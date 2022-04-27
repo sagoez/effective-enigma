@@ -42,9 +42,15 @@ To run this project, you will need to add the following environment variables to
 
 ## Roadmap
 
-- Additional browser support
+- Migrate from Cloudflare Workers to Node
 
-- Add more integrations
+- Delete frontend piece from this project
+
+- Add postgres database
+
+- Write tests
+
+- Add versioning to router library
 
 ## Run Locally
 

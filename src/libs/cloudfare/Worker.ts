@@ -17,11 +17,11 @@ export interface Worker {
   readonly ctx: ExecutionContext
 }
 
-export const WorkerContext = tag<Worker>(Symbol.for("@server/worker-context")) // Representation of where you can find the event in the environment
+export const Worker = tag<Worker>(Symbol.for("@server/worker-context")) // Representation of where you can find the event in the environment
 
 export const WorkerContextLive = ({ env, ctx }: Worker) =>
-  L.fromEffect(WorkerContext)(T.succeed({ env, ctx }))
+  L.fromEffect(Worker)(T.succeed({ env, ctx }))
 
 export const { env: currentEnv, ctx: currentExecutionContext } = T.deriveLifted(
-  WorkerContext,
+  Worker,
 )([], [], ["env", "ctx"])

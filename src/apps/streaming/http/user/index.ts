@@ -1,12 +1,12 @@
 import { API_V1 } from "@streaming/http/version"
 import { currentRequest } from "@core/cloudfare/ApiRequest"
-import { UniqueStorageContext } from "@core/cloudfare/Storage"
+import { UniqueStorage } from "@core/cloudfare/Storage"
 import { string } from "@core/codec"
 import * as T from "@effect-ts/core/Effect"
 import { pipe } from "@effect-ts/system/Function"
 import { createErrorResponse, getPathParams } from "@utils/request"
 
-export const create = T.accessServiceM(UniqueStorageContext)(({ stub }) => {
+export const create = T.accessServiceM(UniqueStorage)(({ stub }) => {
   return pipe(
     T.do,
     T.bind("request", () => currentRequest),
@@ -22,7 +22,7 @@ export const create = T.accessServiceM(UniqueStorageContext)(({ stub }) => {
   )
 })
 
-export const login = T.accessServiceM(UniqueStorageContext)(({ stub }) => {
+export const login = T.accessServiceM(UniqueStorage)(({ stub }) => {
   return pipe(
     currentRequest,
     T.chain((request) => {
@@ -38,7 +38,7 @@ export const login = T.accessServiceM(UniqueStorageContext)(({ stub }) => {
   )
 })
 
-export const get = T.accessServiceM(UniqueStorageContext)(({ stub }) => {
+export const get = T.accessServiceM(UniqueStorage)(({ stub }) => {
   return pipe(
     currentRequest,
     T.chain((request) => {

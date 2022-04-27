@@ -1,10 +1,10 @@
 import { tag } from "@effect-ts/core/Has"
 import * as T from "@effect-ts/core/Effect"
 
-export interface UniqueStorageContext {
+export interface UniqueStorage {
   readonly stub: DurableObjectStub
 }
-export const UniqueStorageContext = tag<UniqueStorageContext>(
+export const UniqueStorage = tag<UniqueStorage>(
   Symbol.for("@server/storage-context"),
 )
 

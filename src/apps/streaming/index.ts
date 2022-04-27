@@ -26,7 +26,7 @@ const redirectTo404 = pipe(
 )
 
 const getAssetFromKV = T.gen(function* (_) {
-  const { ctx, env } = yield* _(WorkerContext)
+  const { ctx, env } = yield* _(Worker)
   const { request } = yield* _(APIRequest)
 
   const response = yield* _(

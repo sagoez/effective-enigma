@@ -1,5 +1,5 @@
 import { APIRequestLive } from "@core/cloudfare/ApiRequest"
-import { UniqueStorageContext } from "@core/cloudfare/Storage"
+import { UniqueStorage } from "@core/cloudfare/Storage"
 import { Env, WorkerContextLive } from "@core/cloudfare/Worker"
 import { string } from "@core/codec"
 import * as T from "@effect-ts/core/Effect"
@@ -32,7 +32,7 @@ export default {
           ),
         ),
       ),
-      T.provideService(UniqueStorageContext)({ stub: uniqueStorage }),
+      T.provideService(UniqueStorage)({ stub: uniqueStorage }),
     )
     return T.runPromise(main)
   },
