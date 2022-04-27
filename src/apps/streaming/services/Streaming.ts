@@ -1,4 +1,4 @@
-import { currentEnv } from "@core/cloudfare/WorkerContext"
+import { currentEnv } from "@core/cloudfare/Worker"
 import * as T from "@effect-ts/core/Effect"
 import * as L from "@effect-ts/core/Effect/Layer"
 import { tag } from "@effect-ts/core/Has"

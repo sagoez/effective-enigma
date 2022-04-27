@@ -1,6 +1,6 @@
 import { API_V1 } from "@streaming/http/version"
 import { currentRequest } from "@core/cloudfare/ApiRequest"
-import { UniqueStorageContext } from "@core/cloudfare/StorageContext"
+import { UniqueStorageContext } from "@core/cloudfare/Storage"
 import { string } from "@core/codec"
 import * as T from "@effect-ts/core/Effect"
 import { pipe } from "@effect-ts/system/Function"

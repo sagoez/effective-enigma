@@ -4,7 +4,7 @@ import * as T from "@effect-ts/core/Effect"
 import { pipe } from "@effect-ts/core/Function"
 import * as App from "./routes"
 import { APIRequest, currentRequest } from "@core/cloudfare/ApiRequest"
-import { WorkerContext } from "@core/cloudfare/WorkerContext"
+import { Worker } from "@core/cloudfare/Worker"
 
 // @ts-ignore
 import manifestJSON from "__STATIC_CONTENT_MANIFEST"

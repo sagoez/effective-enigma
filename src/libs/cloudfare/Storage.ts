@@ -8,13 +8,11 @@ export const UniqueStorageContext = tag<UniqueStorageContext>(
   Symbol.for("@server/storage-context"),
 )
 
-export interface StorageContext {
+export interface Storage {
   readonly state: DurableObjectState
 }
-export const StorageContext = tag<StorageContext>(
-  Symbol.for("@server/storage-context"),
-)
-export const { state: currentState } = T.deriveLifted(StorageContext)(
+export const Storage = tag<Storage>(Symbol.for("@server/storage-context"))
+export const { state: currentState } = T.deriveLifted(Storage)(
   [],
   [],
   ["state"],

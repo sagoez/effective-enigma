@@ -1,6 +1,6 @@
 import { APIRequestLive } from "@core/cloudfare/ApiRequest"
-import { UniqueStorageContext } from "@core/cloudfare/StorageContext"
-import { Env, WorkerContextLive } from "@core/cloudfare/WorkerContext"
+import { UniqueStorageContext } from "@core/cloudfare/Storage"
+import { Env, WorkerContextLive } from "@core/cloudfare/Worker"
 import { string } from "@core/codec"
 import * as T from "@effect-ts/core/Effect"
 import { pipe } from "@effect-ts/core/Function"

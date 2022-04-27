@@ -12,16 +12,14 @@ export type Env = {
 }
 
 // EventContext
-export interface WorkerContext {
+export interface Worker {
   readonly env: Env
   readonly ctx: ExecutionContext
 }
 
-export const WorkerContext = tag<WorkerContext>(
-  Symbol.for("@server/worker-context"),
-) // Representation of where you can find the event in the environment
+export const WorkerContext = tag<Worker>(Symbol.for("@server/worker-context")) // Representation of where you can find the event in the environment
 
-export const WorkerContextLive = ({ env, ctx }: WorkerContext) =>
+export const WorkerContextLive = ({ env, ctx }: Worker) =>
   L.fromEffect(WorkerContext)(T.succeed({ env, ctx }))
 
 export const { env: currentEnv, ctx: currentExecutionContext } = T.deriveLifted(
