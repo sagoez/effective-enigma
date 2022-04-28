@@ -1,44 +1,100 @@
 # Effective Enigma
 
-A brief description of what this project does and who it's for
-
-## Appendix
-
-Any additional information goes here
+Effective Enigma is a project built atop of Effect-TS library and Cloudflare's Worker API to
+provide a simple, yet powerful, way to stream video and audio from your computer to your browser. It also
+has built-in support for authentication and encryption for users who wish to use it. You can check the API Reference below.
 
 ## API Reference
 
-#### Get all items
+### Public API
+
+#### Create user
 
 ```http
-  GET /api/items
+  POST /v1/user
 ```
 
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `api_key` | `string` | **Required**. Your API key |
+| Parameter  | Type     | Description                                  |
+| :--------- | :------- | :------------------------------------------- |
+| `name`     | `string` | **Required**. Name of the user to create     |
+| `surname`  | `string` | **Required**. Lastname of the user to create |
+| `password` | `string` | **Required**. Password of the user           |
+| `email`    | `string` | **Required**. Email of the user              |
 
-#### Get item
+#### Login user
 
 ```http
-  GET /api/items/${id}
+  POST /v1/login
 ```
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id`      | `string` | **Required**. Id of item to fetch |
+| Parameter  | Type     | Description                        |
+| :--------- | :------- | :--------------------------------- |
+| `password` | `string` | **Required**. Password of the user |
+| `email`    | `string` | **Required**. Email of the user    |
 
-#### add(num1, num2)
+### Private API (Authentication required bearer token)
 
-Takes two numbers and returns the sum.
+#### Create live stream
+
+```http
+  POST /v1/create.stream
+```
+
+| Parameter | Type     | Description                    |
+| :-------- | :------- | :----------------------------- |
+| `name`    | `string` | **Required**. Live stream name |
+
+#### Delete live stream
+
+```http
+  DELETE /v1/delete.stream
+```
+
+| Parameter | Type     | Description                  |
+| :-------- | :------- | :--------------------------- |
+| `id`      | `string` | **Required**. Live stream id |
+
+#### Create live stream
+
+```http
+  POST /v1/create.stream
+```
+
+#### Update live stream from url
+
+```http
+  POST /v1/upload.copy
+```
+
+| Parameter   | Type     | Description                                                   |
+| :---------- | :------- | :------------------------------------------------------------ |
+| `url`       | `string` | **Required**. Live stream video url                           |
+| `meta`      | `object` | **Required**. Object that contains how the name will be saved |
+| `meta.name` | `string` | **Required**. Name of the video                               |
+
+#### Update live stream from file
+
+```http
+  POST /v1/upload.file
+```
+
+| Parameter | Type        | Description                             |
+| :-------- | :---------- | :-------------------------------------- |
+| `file`    | `form-data` | **Required**. Video file to be uploaded |
+
+#### Get user
+
+```http
+  GET /v1/user/${email}
+```
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file
+To run this project, you will need to add the following environment variables to your shell:
 
-`API_KEY`
+`CF_ACCOUNT_ID`
 
-`ANOTHER_API_KEY`
+`CF_API_TOKEN`
 
 ## Roadmap
 
@@ -57,33 +113,25 @@ To run this project, you will need to add the following environment variables to
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone https://github.com/samgj18/effective-enigma.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd my-project
+  cd effective-enigma
 ```
 
 Install dependencies
 
 ```bash
-  npm install
+  yarn
 ```
 
 Start the server
 
 ```bash
-  npm run start
-```
-
-## Deployment
-
-To deploy this project run
-
-```bash
-  npm run deploy
+  yarn dev
 ```
 
 ## Authors
