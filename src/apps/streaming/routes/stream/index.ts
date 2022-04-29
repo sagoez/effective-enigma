@@ -13,6 +13,7 @@ import * as R from "@core/router"
 import { createErrorResponse, discriminator } from "@utils/request"
 
 export const createStreamFromName = R.route({
+  v: "v1",
   path: "create.stream",
   method: "POST",
 })(
@@ -49,6 +50,7 @@ export const createStreamFromName = R.route({
 )
 
 export const deleteStreamFromName = R.route({
+  v: "v1",
   path: "delete.stream",
   method: "DELETE",
 })(

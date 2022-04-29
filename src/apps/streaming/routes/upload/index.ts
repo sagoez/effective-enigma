@@ -12,6 +12,7 @@ import {
 import { createErrorResponse, discriminator } from "@utils/request"
 
 export const uploadFromUrl = R.route({
+  v: "v1",
   path: "upload.copy",
   method: "POST",
 })(
@@ -45,6 +46,7 @@ export const uploadFromUrl = R.route({
 )
 
 export const uploadFromFile = R.route({
+  v: "v1",
   path: "upload.file",
   method: "POST",
 })(

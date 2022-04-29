@@ -24,6 +24,7 @@ import {
 } from "@utils/request"
 
 export const getUserRoute = R.route({
+  v: "v1",
   method: "GET",
   path: "get.user",
 })(
@@ -74,6 +75,7 @@ export const getUserRoute = R.route({
 )
 
 export const loginUserRoute = R.route({
+  v: "v1",
   method: "POST",
   path: "login.user",
 })(
@@ -159,6 +161,7 @@ export const loginUserRoute = R.route({
 )
 
 export const createUserRoute = R.route({
+  v: "v1",
   path: "create.user",
   method: "POST",
 })(

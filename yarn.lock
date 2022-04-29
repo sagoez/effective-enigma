@@ -400,15 +400,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cloudflare/kv-asset-handler@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@cloudflare/kv-asset-handler@npm:0.2.0"
-  dependencies:
-    mime: ^3.0.0
-  checksum: bc6a02a9c80be6de90e46454ef4de09301e68726eaa4835de0e30216e50fffcc5612274a17dfb455916cf3418f0cb25fefd2b561a9d2282f4cc10d40527f0acb
-  languageName: node
-  linkType: hard
-
 "@cloudflare/workers-types@npm:^3.0.0":
   version: 3.4.0
   resolution: "@cloudflare/workers-types@npm:3.4.0"
@@ -1940,7 +1931,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "effective-enigma@workspace:."
   dependencies:
-    "@cloudflare/kv-asset-handler": ^0.2.0
     "@cloudflare/workers-types": ^3.0.0
     "@cloudflare/wrangler": ^1.19.7
     "@effect-ts/core": ^0.59.2
@@ -3807,15 +3797,6 @@ __metadata:
   dependencies:
     mime-db: 1.51.0
   checksum: 67013de9e9d6799bde6d669d18785b7e18bcd212e710d3e04a4727f92f67a8ad4e74aee24be28b685adb794944814bde649119b58ee3282ffdbee58f9278d9f3
-  languageName: node
-  linkType: hard
-
-"mime@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "mime@npm:3.0.0"
-  bin:
-    mime: cli.js
-  checksum: f43f9b7bfa64534e6b05bd6062961681aeb406a5b53673b53b683f27fcc4e739989941836a355eef831f4478923651ecc739f4a5f6e20a76487b432bfd4db928
   languageName: node
   linkType: hard
 
