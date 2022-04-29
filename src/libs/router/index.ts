@@ -3,6 +3,7 @@ import { Tagged } from "@effect-ts/core/Case"
 import * as T from "@effect-ts/core/Effect"
 import { Effect } from "@effect-ts/core/Effect"
 import { UnionToIntersection } from "@effect-ts/core/Utils"
+import { API_VERSION } from "@streaming/http/version"
 
 // Primitives
 // Initial or Declarative encoding
@@ -63,10 +64,24 @@ export type MergeEnv<RoutesArray extends Array<Router<any>>> =
 export const empty: Router<unknown> = Router.Empty.make()
 
 export const route =
-  ({ path, method }: { path: Path; method: RouterMethods }) =>
+  ({
+    path,
+    method,
+    v,
+  }: {
+    path: Path
+    method: RouterMethods
+    v: API_VERSION
+  }) =>
   <R>(handler: Effect<R, never, Response>): Router<R> =>
     /// change harcoded string version to a string literal
-    new Router.Route({ path: `/v1/${path}`, handler, method })
+    new Router.Route({
+      path: "".concat(
+        ...["/", v, "/", path instanceof RegExp ? path.source : path],
+      ),
+      handler,
+      method,
+    })
 
 export const merge = <RoutesArray extends Array<Router<any>>>(
   ...routes: RoutesArray
