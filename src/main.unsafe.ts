@@ -13,7 +13,7 @@ export { Storage } from "@storage"
 // RPC = Remote Procedure Call
 export default {
   fetch: async (request: Request, env: Env, ctx: ExecutionContext) => {
-    const uniqueStorageId = env.STORAGE.idFromName("users")
+    const uniqueStorageId = env.STORAGE.idFromName(env.EE_STR_KEY)
     const uniqueStorage = env.STORAGE.get(uniqueStorageId)
 
     const AppEnv = APIRequestLive({ request })["+++"](

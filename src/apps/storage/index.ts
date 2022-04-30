@@ -6,6 +6,7 @@ import * as T from "@effect-ts/core/Effect"
 import { pipe } from "@effect-ts/system/Function"
 import { LoggerLive } from "@streaming/services/Logger"
 import { storageProgram } from "./interpreter"
+import { PostgrestClient } from "@supabase/postgrest-js"
 
 export class Storage {
   state: DurableObjectState
@@ -22,11 +23,19 @@ export class Storage {
     const StorageContextLive = LoggerLive["+++"](APIRequestLive({ request }))[
       "+++"
     ](WorkerContextLive({ ctx: this.ctx, env: this.env }))
-
     const main = pipe(
       storageProgram,
       T.provideSomeLayer(StorageContextLive),
-      T.provideService(StorageContext)({ state: this.state }),
+      T.provideService(StorageContext)({
+        state: new PostgrestClient(this.env.POSTGREST_ENDPOINT, {
+          headers: {
+            "Content-Type": "application/json",
+            apikey: this.env.SUPABASE_KEY,
+            Authorization: `Bearer ${this.env.SUPABASE_KEY}`,
+            Prefer: "return=representation",
+          },
+        }),
+      }),
     )
     return T.runPromise(main)
   }

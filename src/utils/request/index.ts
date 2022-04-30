@@ -157,30 +157,26 @@ const createResponse =
     })
   }
 
-export const getPasswordHash = (salt: string, password: string) => {
-  return T.gen(function* (_) {
-    const textEncoder = new TextEncoder()
-    const textDecoder = new TextDecoder()
-    const passwordBuffer = textEncoder.encode(password)
-    const importedKey = yield* _(
-      T.promise(() =>
-        crypto.subtle.importKey("raw", passwordBuffer, "PBKDF2", false, [
-          "deriveBits",
-        ]),
-      ),
-    )
-    const saltBuffer = textEncoder.encode(salt)
-
-    const params = {
-      name: "PBKDF2",
-      hash: "SHA-256",
-      salt: saltBuffer,
-      iterations: 512,
+const hex = (a: ArrayBuffer) => {
+  let h = ""
+  const b = new Uint8Array(a)
+  for (var i = 0; i < b.length; i++) {
+    const c = b[i]
+    if (c) {
+      const hi = c.toString(16)
+      h += hi.length === 1 ? "0" + hi : hi
     }
-    const derivation = yield* _(
-      T.promise(() => crypto.subtle.deriveBits(params, importedKey, 16 * 8)),
+  }
+  return h
+}
+
+export const hashPassword = (password: string) => {
+  return T.gen(function* (_) {
+    const encoder = new TextEncoder()
+    const hash = yield* _(
+      T.promise(() => crypto.subtle.digest("SHA-1", encoder.encode(password))),
     )
 
-    return textDecoder.decode(derivation)
+    return hex(hash).toUpperCase()
   })
 }

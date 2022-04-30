@@ -9,6 +9,9 @@ export type Env = {
   readonly AUTH_HEADER_KEY: string
   readonly CF_TOKEN: string
   readonly CF_ACCOUNT_ID: string
+  readonly POSTGREST_ENDPOINT: string
+  readonly SUPABASE_KEY: string
+  readonly EE_STR_KEY: string
 }
 
 // EventContext
