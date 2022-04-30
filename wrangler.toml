@@ -3,10 +3,6 @@ name = "worker"
 type = "javascript"
 workers_dev = true
 
-[site]
-bucket = "./public"
-entry-point = ""
-
 [build]
 command = "yarn && yarn build"
 
