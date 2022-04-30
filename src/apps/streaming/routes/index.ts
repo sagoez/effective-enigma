@@ -4,7 +4,7 @@ import {
   deleteStreamFromName,
 } from "@streaming/routes/stream"
 import { uploadFromFile } from "@streaming/routes/upload"
-import { createUser, foo, getUser, loginUser } from "@streaming/routes/user"
+import { createUser, foo, loginUser } from "@streaming/routes/user"
 import { LoggerLive } from "@streaming/services/Logger"
 import { StreamingLive } from "@streaming/services/Streaming"
 import { UploadLive } from "@streaming/services/Upload"
@@ -15,7 +15,7 @@ export const AppContextLive =
 
 const adminRoutes = R.merge(createStreamFromName, deleteStreamFromName)
 
-const authorizedRoutes = R.merge(getUser, uploadFromFile, uploadFromFile)
+const authorizedRoutes = R.merge(uploadFromFile, uploadFromFile)
 const nonAuthorizedRouted = R.merge(createUser, foo, loginUser)
 
 const routesWithLogger = R.merge(
