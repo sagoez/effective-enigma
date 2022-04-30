@@ -1,78 +1,19 @@
 import { currentRequest } from "@core/cloudfare/ApiRequest"
-import { currentState } from "@core/cloudfare/Storage"
+import { currentClient } from "@core/cloudfare/Storage"
 import { currentEnv } from "@core/cloudfare/Worker"
-import { DecodeError, deserialize, string } from "@core/codec"
+import { DecodeError, string } from "@core/codec"
 import * as R from "@core/router"
 import * as T from "@effect-ts/core/Effect"
-import { isLeft } from "@effect-ts/system/Either"
 import { pipe } from "@effect-ts/system/Function"
 import { AuthUser, JWTToken } from "@streaming/algebras/Auth"
-import {
-  UserNotFoundError,
-  CommonUser,
-  User,
-  CreateUser,
-  UnableToCreateUserError,
-} from "@streaming/algebras/User"
+import { CommonUser, CreateUser, User } from "@streaming/algebras/User"
 import JWT from "@tsndr/cloudflare-worker-jwt"
 import {
-  getSearchParams,
   createDataResponse,
   createErrorResponse,
   discriminator,
-  getPasswordHash,
+  hashPassword,
 } from "@utils/request"
-
-export const getUserRoute = R.route({
-  v: "v1",
-  method: "GET",
-  path: "get.user",
-})(
-  pipe(
-    T.do,
-    T.bind("state", () => currentState),
-    T.bind("request", () => currentRequest),
-    T.chain(({ state, request }) => {
-      const email = getSearchParams({ url: request.url, key: "email" })
-      switch (email._tag) {
-        case "Right":
-          return pipe(
-            T.tryCatchPromise(
-              () => state.storage.get(email.right),
-              () => UserNotFoundError.make({ message: "User not found" }),
-            ),
-            T.chain((user) =>
-              T.succeedWith(() => {
-                if (user) {
-                  return createDataResponse(CommonUser)({
-                    value: user as CommonUser, // TODO: fix this
-                  })
-                }
-                return createErrorResponse(string)({
-                  value: "User not found",
-                  status: 404,
-                })
-              }),
-            ),
-            T.catchTag("UserNotFoundError", (error) =>
-              T.succeedWith(() =>
-                createErrorResponse(string)({
-                  value: error.message,
-                }),
-              ),
-            ),
-          )
-        case "Left":
-          return T.succeedWith(() =>
-            createErrorResponse(string)({
-              value: "Unable to decode search param email",
-              status: 400,
-            }),
-          )
-      }
-    }),
-  ),
-)
 
 export const loginUserRoute = R.route({
   v: "v1",
@@ -81,11 +22,11 @@ export const loginUserRoute = R.route({
 })(
   T.gen(function* (_) {
     const request = yield* _(currentRequest)
-    const state = yield* _(currentState)
+    const client = yield* _(currentClient)
 
     const env = yield* _(currentEnv)
 
-    const maybeAuthUser = yield* _(
+    const authUser = yield* _(
       pipe(
         discriminator(AuthUser)(request.clone()),
         T.catchAll((cause) => {
@@ -94,39 +35,42 @@ export const loginUserRoute = R.route({
       ),
     )
 
-    if (maybeAuthUser instanceof DecodeError) {
+    if (authUser instanceof DecodeError) {
       return yield* _(
         T.succeed(
           createErrorResponse(string)({
             status: 400,
-            value: maybeAuthUser.message,
+            value: authUser.message,
           }),
         ),
       )
     }
 
-    const authUser = maybeAuthUser
-
-    const maybeUserPayload = deserialize(User)(
-      yield* _(T.promise(() => state.storage.get(authUser.email))),
+    const payload = yield* _(
+      T.promise(() =>
+        Promise.resolve(
+          client.from<User>("users").select("*").eq("email", authUser.email),
+        ),
+      ),
     )
 
-    if (isLeft(maybeUserPayload)) {
-      return yield* _(
-        T.succeed(
-          createErrorResponse(string)({
-            status: 404,
-            value: "User not found",
-          }),
-        ),
-      )
+    if (payload.error) {
+      return createErrorResponse(string)({
+        value: `${payload.error.message} ${payload.error.details}`,
+        status: payload.status,
+      })
+    }
+    const [user] = payload.data
+
+    if (!user) {
+      return createErrorResponse(string)({
+        value: "User not found",
+        status: 404,
+      })
     }
 
-    const user = maybeUserPayload.right
-
-    const hashed = yield* _(getPasswordHash(user.id, authUser.password))
-
-    if (hashed !== user.password) {
+    const hashed = yield* _(hashPassword(authUser.password))
+    if (user.password && hashed !== user.password) {
       return yield* _(
         T.succeed(
           createErrorResponse(string)({
@@ -167,11 +111,10 @@ export const createUserRoute = R.route({
 })(
   T.gen(function* (_) {
     const request = yield* _(currentRequest)
-    const state = yield* _(currentState)
+    const client = yield* _(currentClient)
     const env = yield* _(currentEnv)
-    const id = yield* _(T.succeedWith(() => crypto.randomUUID()))
 
-    const maybeCreateUser = yield* _(
+    const createUser = yield* _(
       pipe(
         discriminator(CreateUser)(request.clone()),
         T.catchAll((cause) => {
@@ -180,52 +123,55 @@ export const createUserRoute = R.route({
       ),
     )
 
-    if (maybeCreateUser instanceof DecodeError) {
+    if (createUser instanceof DecodeError) {
       return createErrorResponse(string)({
-        value: maybeCreateUser.message,
+        value: createUser.message,
         status: 400,
       })
     }
 
-    const createUser = maybeCreateUser
+    const password = yield* _(hashPassword(createUser.password))
 
-    const saltedPassword = yield* _(getPasswordHash(id, createUser.password))
+    const token = request.headers.get("X-EffEng-PSK")
 
-    const maybeToken = request.headers.get("X-EffEng-PSK")
-
-    const maybeUser = yield* _(
-      pipe(
-        T.tryCatchPromise(
-          () =>
-            state.storage.put(createUser.email, {
+    const payload = yield* _(
+      T.promise(() =>
+        Promise.resolve(
+          client.from<User>("users").insert([
+            {
               name: createUser.name,
-              id,
               // Password shall never be encrypted
-              password: saltedPassword,
+              password,
               phone: createUser.phone,
-              isAdmin: env.AUTH_HEADER_KEY === maybeToken,
+              isAdmin: env.AUTH_HEADER_KEY === token,
               email: createUser.email,
               surname: createUser.surname,
-            }),
-          () =>
-            UnableToCreateUserError.make({ message: "Unable to create user" }),
-        ),
-        T.catchTag("UnableToCreateUserError", (error) =>
-          T.succeedWith(() => error),
+            },
+          ]),
         ),
       ),
     )
-    if (maybeUser instanceof UnableToCreateUserError) {
+
+    if (payload.error) {
       return createErrorResponse(string)({
-        value: maybeUser.message,
-        status: 400,
+        value: `${payload.error.message} ${payload.error.details}`,
+        status: payload.status,
+      })
+    }
+
+    const [user] = payload.data
+
+    if (!user) {
+      return createErrorResponse(string)({
+        value: "User not found",
+        status: 404,
       })
     }
 
     return createDataResponse(CommonUser)({
       value: CommonUser.encode({
-        id,
-        name: createUser.name,
+        id: user.id,
+        name: user.name,
       }) as CommonUser, //TODO: Encoding should give back the same type
     })
   }),
