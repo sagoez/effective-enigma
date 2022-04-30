@@ -138,3 +138,7 @@ Start the server
 
 - [@samgj18](https://www.github.com/samgj18)
 - [@mikearnaldi](https://github.com/mikearnaldi)
+
+## Issues
+
+There is an open issue to migrate from the internal Cloudflare stub for the state to fully embrace Supabse Postgrest. For that reason this won't work on production unless a paid version of Cloudflare Workers is acquired. However, it works as expected on the dev env.
