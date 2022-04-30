@@ -17,12 +17,6 @@ export const createUser = R.route({
   method: "POST",
 })(UserStorage.create)
 
-export const getUser = R.route({
-  v: "v1",
-  path: "user/:email",
-  method: "GET",
-})(UserStorage.get)
-
 export const loginUser = R.route({
   v: "v1",
   path: "login",
